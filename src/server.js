@@ -1,20 +1,28 @@
 require("dotenv").config();
 const express = require("express");
 
-const exampleRouter = require("../middleWareExample");
-
 const port = process.env.PORT || 5001;
+
+const User = require("./users/model");
+const userRouter = require("./users/routes");
 
 const app = express();
 
 app.use(express.json());
 
-app.use(exampleRouter);
+
+
+const syncTables = () => {
+    User.sync({ alter: true, force: false });
+};
+
+app.use(userRouter);
 
 app.get("/health", (req, res) =>
     res.status(200).json({ message: "API is working" })
 );
 
 app.listen(port, () => {
+    syncTables();
     console.log (`App is listening on port ${port}`);
 })
