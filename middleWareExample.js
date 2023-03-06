@@ -12,11 +12,23 @@ const middleOne = async (req, res, next) => {
     next();
 };
 
+// "next()" - express is expecting a third (optional) argument called next,
+// this will pass the request onto the next function once stuff has happened
+
+
+
 const middleTwo = async ( req, res, next) => {
     console.log("start middleTwo", req.body);
     req.body["middleTwo"] = "Im from the middleTwo";
     next();
 };
+
+// request come to url "/example"
+// request passes to middleOne
+// things happen in middleOne
+// the "next()" function is called and passes the request to middleTwo
+// things happen in middleTwo
+// "next()" passes request to finalFunc
 
 exampleRouter.post("/example", middleOne, middleTwo, finalFunc);
 
