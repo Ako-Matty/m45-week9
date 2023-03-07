@@ -7,8 +7,8 @@ const User = require("../users/model")
 const hashPass = async (req, res, next) => {
     try {
         // const userFind = await User.findOne({where: {username: req.body.username}});
-        
-        const hashedPass = await bcrypt.hash(req.body.password, saltRounds);
+
+        const hashedPass = await bcrypt.hash(req.body.password, parseInt(saltRounds));
         req.body.password = hashedPass;
 
         console.log(req.body);
@@ -26,18 +26,24 @@ const hashPass = async (req, res, next) => {
 
 const comparePass = async (req, res, next) => {
     try {
-        req.user = await User.findOne({ where: { username: req.body.username }});
+
+        // get user
+        // const user = await User.findOne({ where: { username: req.body.username } });
+        req.user = await User.findOne({ where: { username: req.body.username } });
 
         console.log(req.user);
 
         const match = await bcrypt.compare(req.body.password, req.user.password)
 
+        // if no match - respond with 500 error message "passwords do not match"
+
 
         if (!match) {
             const error = new Error("Passwords do not match")
             req.status(500).json({ errorMessage: error.message, error: error });
-        } 
-        
+        }
+
+        // if match - next function
 
         next();
     } catch (error) {
@@ -45,12 +51,6 @@ const comparePass = async (req, res, next) => {
     }
 };
 
-
-// const salt = bcrypt.genSaltSync(saltRounds);
-// const hash = bcrypt.hashSync(myPlaintextPassword, salt);
-
-// bcrypt.compareSync(myPlaintextPassword, hash);
-// bcrypt.compareSync(someOtherPlaintextPassword, hash);
 
 
 module.exports = {
