@@ -12,7 +12,6 @@ const registerUser = async (req, res) => {
         //     password: req.body.password,
         // });
 
-
         res.status(201).json({
             message: "Success", user: { username: req.body.username, email: req.body.email },
         });
@@ -23,6 +22,7 @@ const registerUser = async (req, res) => {
 
 const login = async (req, res) => {
     try {
+        console.log("insidecontroller")
         const token = await jwt.sign({ id: req.user.id }, process.env.SECRET);
 
         res.status(201).json({
@@ -30,7 +30,7 @@ const login = async (req, res) => {
             user: {
                 username: req.user.username,
                 email: req.user.email,
-                token: token,
+                token: token
             }
         });
     } catch (error) {

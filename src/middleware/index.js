@@ -28,12 +28,12 @@ const hashPass = async (req, res, next) => {
 
 const comparePass = async (req, res, next) => {
     try {
-
+        console.log(req.body.password)
         // get user
         // const user = await User.findOne({ where: { username: req.body.username } });
         req.user = await User.findOne({ where: { username: req.body.username } });
 
-        console.log(req.user);
+        console.log(req.user.password);
 
         const match = await bcrypt.compare(req.body.password, req.user.password)
 
@@ -49,6 +49,8 @@ const comparePass = async (req, res, next) => {
 
         next();
     } catch (error) {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+        console.log("thisError")
         res.status(501).json({ errorMessage: error.message, error: error });
     }
 };
@@ -56,23 +58,23 @@ const comparePass = async (req, res, next) => {
 const tokenCheck = async (req, res, next) => {
     try {
         const token = req.header("Authorization");
-        
+
         const decodedToken = await jwt.verify(token, process.env.SECRET);
         // console.log(decodedToken)
 
-        const user = await User.findOne({where: {id: decodedToken.id } });
+        const user = await User.findOne({ where: { id: decodedToken.id } });
         console.log(user)
 
         if (!user) {
             const error = new Error("User is not authorised")
-            res.status(401).json({errorMessage: error.message, error: error })
+            res.status(401).json({ errorMessage: error.message, error: error })
         }
 
-        req.authCheck = user; 
+        req.authCheck = user;
 
         next();
     } catch (error) {
-        res.status(501).json({ errorMessage: error.messsage, error: error})
+        res.status(501).json({ errorMessage: error.messsage, error: error })
     }
 }
 

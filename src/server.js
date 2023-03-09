@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 // allows for host to access host port OR dev port 5001
 const port = process.env.PORT || 5001;
 
@@ -12,8 +13,9 @@ const bookRouter = require("./books/routes");
 // creates app object from which we can use methods e.g. .use
 const app = express();
 
-app.use(express.json());
 
+app.use(express.json());
+app.use(cors());
 
 
 const syncTables = () => {
